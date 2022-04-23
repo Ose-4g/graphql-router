@@ -1,0 +1,53 @@
+{
+  "name": "@ose4g/graphql-middleware",
+  "version": "1.0.0",
+  "description": "create express like middleware in graphql",
+  "main": "lib/index.js",
+  "dependencies": {
+    "graphql": "^16.3.0",
+    "reflect-metadata": "^0.1.13"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.3.0",
+    "@types/mocha": "^9.1.0",
+    "@types/node-cron": "^3.0.1",
+    "@types/sinon": "^10.0.11",
+    "chai": "^4.3.6",
+    "express": "^4.17.3",
+    "express-graphql": "^0.12.0",
+    "mocha": "^9.2.2",
+    "prettier": "^2.5.1",
+    "rimraf": "^3.0.2",
+    "sinon": "^13.0.1",
+    "typescript": "^4.6.2"
+  },
+  "scripts": {
+    "test": "rimraf lib && yarn build && mocha lib/__test__ --recursive --timeout 25000 --exit",
+    "build": "tsc",
+    "prepare": "yarn build",
+    "prepublish": "yarn format",
+    "format": "prettier --write .",
+    "preversion": "yarn format",
+    "version": "yarn format && git add -A src",
+    "postversion": "git push && git push --tags"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ose-4g/graphql-middleware.git"
+  },
+  "keywords": [
+    "graphql",
+    "middleware",
+    "express-geaphql",
+    "decorators"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Ose-4g/graphql-middleware/issues"
+  },
+  "homepage": "https://github.com/Ose-4g/graphql-middleware#readme",
+  "files": [
+    "lib/**/*"
+  ]
+}
