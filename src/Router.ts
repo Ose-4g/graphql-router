@@ -25,6 +25,7 @@ export class Router {
         else if (pos < n) allMiddlewares[pos++](parent, args, context, info, next);
         else if (graphQLField.resolve) graphQLField.resolve(parent, args, context, info);
       };
+      next();
     };
 
     return {
