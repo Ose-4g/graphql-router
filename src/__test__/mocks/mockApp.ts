@@ -10,20 +10,21 @@ app.use(express.urlencoded({ extended: true }));
 
 const createMiddleware = function (val: string): Middleware {
   return (parent: any, args: any, context: any, info: GraphQLResolveInfo, next: Next) => {
+    if (!args.name) args.name = '';
+    args.name += `-->${val}`;
     console.log(val, 'started');
     return next();
-    console.log(val, 'ended');
   };
 };
 
 const router = new Router();
-router.use(createMiddleware('pre-first'));
+router.use(createMiddleware('global-middlware'));
+
 const helloResolver: GraphQLFieldConfig<any, any, any> = {
   type: GraphQLString,
   args: {},
   resolve(parent, args, context, info) {
-    console.log('\n\n');
-    return 'My name is Ose4g';
+    return 'My name is Ose4g' + args.name;
   },
 };
 
@@ -31,16 +32,15 @@ const randomResolver: GraphQLFieldConfig<any, any, any> = {
   type: GraphQLString,
   args: {},
   resolve(parent, args, context, info) {
-    console.log('\n\n');
-    return 'My name is random' + String(Date.now());
+    return 'My name is random' + args.name;
   },
 };
 
 const RootQuery = new GraphQLObjectType({
   name: 'RootQueryType',
   fields: {
-    hello: router.add(helloResolver, createMiddleware('first'), createMiddleware('second')),
-    random: router.add(randomResolver, createMiddleware('lastone')),
+    hello: router.add(helloResolver, createMiddleware('joiMiddleware'), createMiddleware('authiddleware')),
+    random: router.add(randomResolver, createMiddleware('formatMiddleware')),
   },
 });
 
