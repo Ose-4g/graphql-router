@@ -20,12 +20,17 @@ export class Router {
     const n = allMiddlewares.length;
     let pos = 0;
     let newResolver = (parent: any, args: any, context: any, info: GraphQLResolveInfo) => {
+      let main: any;
       const next: Next = (error?: Error) => {
         if (error) throw error;
         else if (pos < n) allMiddlewares[pos++](parent, args, context, info, next);
-        else if (graphQLField.resolve) graphQLField.resolve(parent, args, context, info);
+        else if (graphQLField.resolve) {
+          main = graphQLField.resolve(parent, args, context, info);
+        }
       };
       next();
+      pos = 0;
+      return main;
     };
 
     return {
