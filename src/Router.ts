@@ -19,17 +19,24 @@ export class Router {
     const allMiddlewares = this.middlewares.concat(middlewares);
     const n = allMiddlewares.length;
     let pos = 0;
+
     let newResolver = (parent: any, args: any, context: any, info: GraphQLResolveInfo) => {
-      let main: any;
+      let main: any = null;
       const next: Next = (error?: Error) => {
-        if (error) throw error;
-        else if (pos < n) allMiddlewares[pos++](parent, args, context, info, next);
-        else if (graphQLField.resolve) {
+        if (error) {
+          throw error;
+        } else if (pos < n) {
+          allMiddlewares[pos++](parent, args, context, info, next);
+        } else if (graphQLField.resolve) {
           main = graphQLField.resolve(parent, args, context, info);
+          pos = 0;
+          console.log('main = ', main);
+          return main;
         }
       };
+
       next();
-      pos = 0;
+      console.log('returning main');
       return main;
     };
 

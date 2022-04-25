@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express';
 import { GraphQLSchema, GraphQLObjectType } from 'graphql';
 import { graphqlHTTP } from 'express-graphql';
 import { Router } from '../../Router';
-import { ResolverCD } from './resolvers';
+import { Resolver as Resolver } from './resolvers';
 import { createMiddleware } from './helpers';
 import './resolvers';
 import 'reflect-metadata';
@@ -15,13 +15,13 @@ app.use(express.urlencoded({ extended: true }));
 const router = new Router();
 router.use(createMiddleware('global-middlware'));
 
-const resolver = new ResolverCD();
+const resolver = new Resolver();
 
 const RootQuery = new GraphQLObjectType({
   name: 'RootQueryType',
   fields: {
-    hello: router.add(resolver.hello),
-    random: router.add(resolver.random),
+    hello: router.add(resolver.hello, createMiddleware('golabl2')),
+    random: resolver.random,
   },
 });
 
