@@ -1,5 +1,7 @@
 # graphql-middleware
 
+## Prelude
+
 It is very easy working with middlewares for REST APIs in express. Look at the example below.
 
 ```typescript
@@ -59,3 +61,27 @@ When the login resolver is called .
 the middleware first get executed in the order
 validatePasswordMiddleware --> validateEmailMiddleware --> resolver
 ```
+
+## Installation
+
+```bash
+npm install @ose4g/graphql-middleware
+```
+
+OR using yarn
+
+```bash
+yarn add @ose4g/graphql-middleware
+```
+
+## Usage
+
+The **router** object has 2 methods.
+
+- **use( ...middleware**: _Middleware[]_ **)**: adds middleware to the router object.
+- **add( resolver**: _GraphQLFieldConfig<any,any,any>_, **...middleware**: _Middleware[]_ **)**: return a new resolver that calls all middleware and returns the original resolver.
+
+## Extras
+
+An extra feature that was added for use with typescript is decorators.
+Look at how they are used below
