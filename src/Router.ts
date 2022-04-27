@@ -2,7 +2,7 @@ import { GraphQLFieldConfig, GraphQLResolveInfo } from 'graphql';
 
 export type Next = (error?: Error) => any;
 
-export type Middleware = (parent: any, args: any, context: any, info: GraphQLResolveInfo, next: Next) => any;
+export type Middleware = (next: Next, parent: any, args: any, context?: any, info?: GraphQLResolveInfo) => any;
 
 export class Router {
   private middlewares: Middleware[] = [];
@@ -26,18 +26,19 @@ export class Router {
         if (error) {
           throw error;
         } else if (pos < n) {
-          allMiddlewares[pos++](parent, args, context, info, next);
+          return allMiddlewares[pos++](next, parent, args, context, info);
         } else if (graphQLField.resolve) {
           main = graphQLField.resolve(parent, args, context, info);
           pos = 0;
           console.log('main = ', main);
+          console.log('returning main');
           return main;
         }
       };
 
-      next();
-      console.log('returning main');
-      return main;
+      return next();
+      // console.log('returning main');
+      // return main;
     };
 
     return {

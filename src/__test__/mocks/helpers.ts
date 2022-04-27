@@ -5,7 +5,7 @@ function resolveAfter2Seconds() {
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve('resolved');
-    }, 2000);
+    }, 5000);
   });
 }
 
@@ -14,14 +14,26 @@ function resolveAfter2Seconds() {
  * @param val string describing that middleware
  * @returns
  */
-export const createMiddleware = function (val: string): Middleware {
-  return async (parent: any, args: any, context: any, info: GraphQLResolveInfo, next: Next) => {
+export const createMiddlewareAsync = function (val: string): Middleware {
+  return async (next: Next, parent: any, args: any, context?: any, info?: GraphQLResolveInfo) => {
     if (!args.name) args.name = '';
     args.name += `-->${val}`;
     console.log(val, 'started');
     await resolveAfter2Seconds();
     console.log(val, 'done waiting');
-    next();
+    const result = next();
     //console.log(val, 'ended');
+    return result;
+  };
+};
+
+export const createMiddleware = function (val: string): Middleware {
+  return (next: Next, parent: any, args: any, context?: any, info?: GraphQLResolveInfo) => {
+    if (!args.name) args.name = '';
+    args.name += `-->${val}`;
+    console.log(val, 'started');
+    const result = next();
+    // console.log(val, 'ended');
+    return result;
   };
 };
