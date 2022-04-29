@@ -1,6 +1,6 @@
 import { GraphQLFieldConfig } from 'graphql';
 import 'reflect-metadata';
-import { Middleware, Router } from './Router';
+import { Middleware, Route, Router } from './Router';
 
 const CLASS_MIDDLEWARE_SYMBOL = Symbol('Group');
 
@@ -34,7 +34,7 @@ export const middleware = function (...middlewares: Middleware[]): PropertyDecor
       allMiddlewares = allMiddlewares.concat(middlewares);
       const router = new Router();
 
-      const newVal = router.add(val, ...allMiddlewares);
+      const newVal = router.compress(new Route('', val, allMiddlewares));
       return newVal;
     };
 
