@@ -21,8 +21,8 @@ export const createMiddlewareAsync = function (val: string): Middleware {
     console.log(val, 'started');
     await resolveAfter2Seconds();
     console.log(val, 'done waiting');
-    const result = next();
-    //console.log(val, 'ended');
+    const result = await next();
+    console.log(val, 'ended');
     return result;
   };
 };
@@ -33,7 +33,7 @@ export const createMiddleware = function (val: string): Middleware {
     args.name += `-->${val}`;
     console.log(val, 'started');
     const result = next();
-    // console.log(val, 'ended');
+    console.log(val, 'ended');
     return result;
   };
 };

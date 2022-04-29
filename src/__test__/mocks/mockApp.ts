@@ -2,10 +2,12 @@ import express, { Request, Response } from 'express';
 import { GraphQLSchema, GraphQLObjectType } from 'graphql';
 import { graphqlHTTP } from 'express-graphql';
 import { Router } from '../../Router';
-import { Resolver as Resolver } from './resolvers';
-import { createMiddlewareAsync, createMiddleware } from './helpers';
+import { ResolverCD as Resolver } from './resolvers';
+import { createMiddleware } from './helpers';
 import './resolvers';
 import 'reflect-metadata';
+
+const resolver = new Resolver();
 
 const app = express();
 
@@ -13,16 +15,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const router = new Router();
-router.use(createMiddleware('global-middlware'), createMiddlewareAsync('gloabl1'));
-
-const resolver = new Resolver();
+router
+  .use(createMiddleware('global-middlware'), createMiddleware('gloabl1'))
+  .add('hello', resolver.hello, createMiddleware('globalpre2'))
+  .use(createMiddleware('global2'))
+  .add('random', resolver.random, createMiddleware('gloabl3'));
 
 const RootQuery = new GraphQLObjectType({
   name: 'RootQueryType',
-  fields: {
-    hello: router.add(resolver.hello, createMiddlewareAsync('golabl2'), createMiddleware('global3')),
-    random: resolver.random,
-  },
+  fields: router.getFields(),
 });
 
 const schema: GraphQLSchema = new GraphQLSchema({ query: RootQuery });
