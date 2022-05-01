@@ -1,4 +1,5 @@
 import { GraphQLFieldConfig, GraphQLResolveInfo, ThunkObjMap } from 'graphql';
+import { ROUTER_SYMBOL } from './decorators';
 
 export type Next = (error?: Error) => any;
 
@@ -16,6 +17,10 @@ export class Router {
   private queryRoutes: Route[] = [];
   private mutationRoutes: Route[] = [];
 
+  static getRouter(constructor: Function): Router {
+    const router = Reflect.getMetadata(ROUTER_SYMBOL, constructor);
+    return router;
+  }
   use(router: Router): Router;
   use(...middlewares: Middleware[]): Router;
 

@@ -1,8 +1,7 @@
-import { GraphQLFieldConfig } from 'graphql';
 import 'reflect-metadata';
-import { Middleware, Route, Router } from './Router';
+import { Middleware, Router } from './Router';
 
-const CLASS_MIDDLEWARE_SYMBOL = Symbol('Group');
+export const ROUTER_SYMBOL = Symbol('Router');
 
 //define middleware to be run on all annotated reolvers in the class.
 /**
@@ -12,39 +11,28 @@ const CLASS_MIDDLEWARE_SYMBOL = Symbol('Group');
  */
 export const classMiddleware = function (...middleware: Middleware[]): ClassDecorator {
   return function (constructor: Function) {
-    let allMiddlewares: Middleware[] = Reflect.getMetadata(CLASS_MIDDLEWARE_SYMBOL, constructor) || [];
-    allMiddlewares = allMiddlewares.concat(middleware);
-    Reflect.defineMetadata(CLASS_MIDDLEWARE_SYMBOL, allMiddlewares, constructor);
+    const router: Router = Reflect.getMetadata(ROUTER_SYMBOL, constructor) || new Router();
+    const newRouter: Router = new Router();
+    newRouter.use(...middleware);
+    newRouter.use(router);
+    Reflect.defineMetadata(ROUTER_SYMBOL, newRouter, constructor);
   };
 };
 
-//define middlware to run after the groupmiddlware and before the resolver themselves.
-/**
- * Adds middleware to be run after the global middleware and after the
- * @param resolvers
- * @returns
- */
-export const middleware = function (...middlewares: Middleware[]): PropertyDecorator {
+export const query = function (path: string, ...middleware: Middleware[]): PropertyDecorator {
   return function (target: Object, propertyKey: string | Symbol) {
-    let val: GraphQLFieldConfig<any, any, any>;
+    const router: Router = Reflect.getMetadata(ROUTER_SYMBOL, target.constructor) || new Router();
+    const resolver = (target as any)[propertyKey as string];
+    console.log(resolver);
+    router.query(path, resolver, ...middleware);
+    Reflect.defineMetadata(ROUTER_SYMBOL, router, target.constructor);
+  };
+};
 
-    //we're getting middleware from the class in the getter because property decorators get called before class decorators.
-    const getter = function () {
-      let allMiddlewares: Middleware[] = Reflect.getMetadata(CLASS_MIDDLEWARE_SYMBOL, target.constructor) || [];
-      allMiddlewares = allMiddlewares.concat(middlewares);
-      const router = new Router();
-
-      const newVal = router.compress(new Route('', val, allMiddlewares));
-      return newVal;
-    };
-
-    const setter = function (original: GraphQLFieldConfig<any, any, any>) {
-      val = original;
-    };
-
-    Object.defineProperty(target, propertyKey as string, {
-      get: getter,
-      set: setter,
-    });
+export const mutation = function (path: string, ...middleware: Middleware[]): PropertyDecorator {
+  return function (target: Object, propertyKey: string | Symbol) {
+    const router: Router = Reflect.getMetadata(ROUTER_SYMBOL, target.constructor) || new Router();
+    router.mutation(path, (target as any)[propertyKey as string], ...middleware);
+    Reflect.defineMetadata(ROUTER_SYMBOL, router, target.constructor);
   };
 };

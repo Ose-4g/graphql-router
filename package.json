@@ -1,5 +1,5 @@
 {
-  "name": "@ose4g/graphql-middleware",
+  "name": "@ose4g/graphql-router",
   "version": "1.0.0",
   "description": "create express like middleware in graphql",
   "main": "lib/index.js",
@@ -39,8 +39,9 @@
   "keywords": [
     "graphql",
     "middleware",
-    "express-geaphql",
-    "decorators"
+    "express-graphql",
+    "decorators",
+    "router"
   ],
   "author": "",
   "license": "ISC",
