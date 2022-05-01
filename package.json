@@ -1,7 +1,7 @@
 {
-  "name": "@ose4g/graphql-middleware",
+  "name": "@ose4g/graphql-router",
   "version": "1.0.0",
-  "description": "create express like middleware in graphql",
+  "description": "create express like middleware and router in graphql",
   "main": "lib/index.js",
   "dependencies": {
     "graphql": "^16.3.0",
@@ -34,20 +34,21 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Ose-4g/graphql-middleware.git"
+    "url": "git+https://github.com/Ose-4g/graphql-router.git"
   },
   "keywords": [
     "graphql",
     "middleware",
-    "express-geaphql",
-    "decorators"
+    "express-graphql",
+    "decorators",
+    "router"
   ],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Ose-4g/graphql-middleware/issues"
+    "url": "https://github.com/Ose-4g/graphql-router/issues"
   },
-  "homepage": "https://github.com/Ose-4g/graphql-middleware#readme",
+  "homepage": "https://github.com/Ose-4g/graphql-router#readme",
   "files": [
     "lib/**/*"
   ]

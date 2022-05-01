@@ -1,4 +1,4 @@
-import { classMiddleware, middleware } from '../../decorators';
+import { classMiddleware, query } from '../../decorators';
 import { GraphQLFieldConfig, GraphQLString } from 'graphql';
 import { createMiddleware } from './helpers';
 
@@ -6,7 +6,7 @@ function resolveAfter2Seconds() {
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve('resolved');
-    }, 5000);
+    }, 500);
   });
 }
 
@@ -33,18 +33,20 @@ export class Resolver {
 }
 
 export class ResolverD {
-  @middleware(createMiddleware('helloMiddlware1'), createMiddleware('helloMiddlware2'))
+  @query('hello', createMiddleware('helloMiddlware1'), createMiddleware('helloMiddlware2'))
   hello = hello;
 
-  @middleware(createMiddleware('randomMiddleware1'), createMiddleware('randomMiddleware2'))
+  @query('random', createMiddleware('randomMiddleware1'), createMiddleware('randomMiddleware2'))
   random = random;
 }
+new ResolverD();
 
 @classMiddleware(createMiddleware('class-middleware'))
 export class ResolverCD {
-  @middleware(createMiddleware('helloMiddlware1'), createMiddleware('helloMiddlware2'))
+  @query('hello', createMiddleware('helloMiddlware1'), createMiddleware('helloMiddlware2'))
   hello = hello;
 
-  @middleware(createMiddleware('randomMiddleware1'), createMiddleware('randomMiddleware2'))
+  @query('random', createMiddleware('helloMiddlware1'), createMiddleware('helloMiddlware2'))
   random = random;
 }
+new ResolverCD();
