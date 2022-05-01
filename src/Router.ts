@@ -18,10 +18,16 @@ export class Router {
   private queryRoutes: Route[] = [];
   private mutationRoutes: Route[] = [];
 
+  /**
+   *
+   * @param constructor : the class for which we want to get a router. This class must have at least one property tagged with query or mutation
+   * @returns : The router for that class.
+   */
   static getRouter(constructor: Function): Router {
     const router = Reflect.getMetadata(ROUTER_SYMBOL, constructor);
     return router;
   }
+
   use(router: Router): Router;
   use(...middlewares: Middleware[]): Router;
 
@@ -44,17 +50,36 @@ export class Router {
     return this;
   }
 
+  /**
+   *
+   * @param path name of the query
+   * @param resolver : the resolver object
+   * @param middleware : all middleware to run before the main resolver
+   * @returns : Router object
+   */
   query(path: string, resolver: GraphQLFieldConfig<any, any, any>, ...middleware: Middleware[]) {
     this.queryRoutes.push(new Route(path, resolver, [...this.middlewares, ...middleware]));
     return this;
   }
 
+  /**
+   *
+   * @param path :name of the muatation
+   * @param resolver : resolver object
+   * @param middleware : all middlewares to be run before the main resolver
+   * @returns : a router object
+   */
   mutation(path: string, resolver: GraphQLFieldConfig<any, any, any>, ...middleware: Middleware[]) {
     this.mutationRoutes.push(new Route(path, resolver, [...this.middlewares, ...middleware]));
     return this;
   }
 
-  compress(route: Route): GraphQLFieldConfig<any, any, any> {
+  /**
+   *
+   * @param route : a route object
+   * @returns : a new resolver with all middlewares merged into one.
+   */
+  private compress(route: Route): GraphQLFieldConfig<any, any, any> {
     const allMiddlewares = route.middleware;
     const n = allMiddlewares.length;
     let pos = 0;
@@ -85,6 +110,10 @@ export class Router {
     };
   }
 
+  /**
+   *
+   * @returns returns a field of all mutations on the router
+   */
   getMutationFields(): ThunkObjMap<GraphQLFieldConfig<any, any, any>> {
     let field: ThunkObjMap<GraphQLFieldConfig<any, any, any>> = {};
     this.mutationRoutes.forEach((route) => {
@@ -93,6 +122,10 @@ export class Router {
     return field;
   }
 
+  /**
+   *
+   * @returns returns an field of all queries on the router.
+   */
   getQueryFields(): ThunkObjMap<GraphQLFieldConfig<any, any, any>> {
     let field: ThunkObjMap<GraphQLFieldConfig<any, any, any>> = {};
     this.queryRoutes.forEach((route) => {

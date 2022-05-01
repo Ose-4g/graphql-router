@@ -19,6 +19,12 @@ export const classMiddleware = function (...middleware: Middleware[]): ClassDeco
   };
 };
 
+/**
+ * Add a new query function
+ * @param path : name of the query
+ * @param middleware : all the middleware functions
+ * @returns
+ */
 export const query = function (path: string, ...middleware: Middleware[]): PropertyDecorator {
   return function (target: Object, propertyKey: string | Symbol) {
     let val: GraphQLFieldConfig<any, any, any>;
@@ -42,6 +48,12 @@ export const query = function (path: string, ...middleware: Middleware[]): Prope
   };
 };
 
+/**
+ * Add a new mutation function
+ * @param path : name of the mutation
+ * @param middleware : all the middleware functions
+ * @returns
+ */
 export const mutation = function (path: string, ...middleware: Middleware[]): PropertyDecorator {
   return function (target: Object, propertyKey: string | Symbol) {
     let val: GraphQLFieldConfig<any, any, any>;
