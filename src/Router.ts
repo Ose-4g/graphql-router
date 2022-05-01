@@ -13,15 +13,38 @@ export class Route {
 }
 export class Router {
   private middlewares: Middleware[] = [];
-  private routes: Route[] = [];
+  private queryRoutes: Route[] = [];
+  private mutationRoutes: Route[] = [];
 
-  use(...middlewares: Middleware[]): Router {
-    this.middlewares = this.middlewares.concat(middlewares);
+  use(router: Router): Router;
+  use(...middlewares: Middleware[]): Router;
+
+  use(...val: unknown[]) {
+    if (!val || val.length === 0) throw new Error('argument is required for router.use');
+    if (val[0] instanceof Router) {
+      const queryFields = val[0].getQueryFields();
+      const mutationFields = val[0].getMutationFields();
+
+      for (const key in queryFields) {
+        this.query(key, (queryFields as any)[key]);
+      }
+
+      for (const key in mutationFields) {
+        this.mutation(key, (mutationFields as any)[key]);
+      }
+    } else if (typeof val[0] === 'function') {
+      this.middlewares = this.middlewares.concat(val as Middleware[]);
+    }
     return this;
   }
 
-  add(path: string, resolver: GraphQLFieldConfig<any, any, any>, ...middleware: Middleware[]) {
-    this.routes.push(new Route(path, resolver, [...this.middlewares, ...middleware]));
+  query(path: string, resolver: GraphQLFieldConfig<any, any, any>, ...middleware: Middleware[]) {
+    this.queryRoutes.push(new Route(path, resolver, [...this.middlewares, ...middleware]));
+    return this;
+  }
+
+  mutation(path: string, resolver: GraphQLFieldConfig<any, any, any>, ...middleware: Middleware[]) {
+    this.mutationRoutes.push(new Route(path, resolver, [...this.middlewares, ...middleware]));
     return this;
   }
 
@@ -56,9 +79,17 @@ export class Router {
     };
   }
 
-  getFields(): ThunkObjMap<GraphQLFieldConfig<any, any, any>> {
+  getMutationFields(): ThunkObjMap<GraphQLFieldConfig<any, any, any>> {
     let field: ThunkObjMap<GraphQLFieldConfig<any, any, any>> = {};
-    this.routes.forEach((route) => {
+    this.mutationRoutes.forEach((route) => {
+      (field as any)[route.path] = this.compress(route);
+    });
+    return field;
+  }
+
+  getQueryFields(): ThunkObjMap<GraphQLFieldConfig<any, any, any>> {
+    let field: ThunkObjMap<GraphQLFieldConfig<any, any, any>> = {};
+    this.queryRoutes.forEach((route) => {
       (field as any)[route.path] = this.compress(route);
     });
     return field;

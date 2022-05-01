@@ -17,13 +17,15 @@ app.use(express.urlencoded({ extended: true }));
 const router = new Router();
 router
   .use(createMiddleware('global-middlware'), createMiddleware('gloabl1'))
-  .add('hello', resolver.hello, createMiddleware('globalpre2'))
+  .query('hello', resolver.hello, createMiddleware('globalpre2'))
   .use(createMiddleware('global2'))
-  .add('random', resolver.random, createMiddleware('gloabl3'));
+  .query('random', resolver.random, createMiddleware('gloabl3'));
 
+const newRouter = new Router();
+newRouter.use(createMiddleware('I will run first first')).use(router);
 const RootQuery = new GraphQLObjectType({
   name: 'RootQueryType',
-  fields: router.getFields(),
+  fields: newRouter.getQueryFields(),
 });
 
 const schema: GraphQLSchema = new GraphQLSchema({ query: RootQuery });
