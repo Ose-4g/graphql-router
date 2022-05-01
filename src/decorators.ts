@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { Middleware, Router } from './Router';
-
+import { GraphQLFieldConfig } from 'graphql';
 export const ROUTER_SYMBOL = Symbol('Router');
 
 //define middleware to be run on all annotated reolvers in the class.
@@ -21,18 +21,46 @@ export const classMiddleware = function (...middleware: Middleware[]): ClassDeco
 
 export const query = function (path: string, ...middleware: Middleware[]): PropertyDecorator {
   return function (target: Object, propertyKey: string | Symbol) {
-    const router: Router = Reflect.getMetadata(ROUTER_SYMBOL, target.constructor) || new Router();
-    const resolver = (target as any)[propertyKey as string];
-    console.log(resolver);
-    router.query(path, resolver, ...middleware);
-    Reflect.defineMetadata(ROUTER_SYMBOL, router, target.constructor);
+    let val: GraphQLFieldConfig<any, any, any>;
+
+    const getter = function () {
+      return val;
+    };
+
+    const setter = function (original: GraphQLFieldConfig<any, any, any>) {
+      val = original;
+      const router: Router = Reflect.getMetadata(ROUTER_SYMBOL, target.constructor) || new Router();
+      const resolver = original;
+      router.query(path, resolver, ...middleware);
+      Reflect.defineMetadata(ROUTER_SYMBOL, router, target.constructor);
+    };
+
+    Object.defineProperty(target, propertyKey as string, {
+      get: getter,
+      set: setter,
+    });
   };
 };
 
 export const mutation = function (path: string, ...middleware: Middleware[]): PropertyDecorator {
   return function (target: Object, propertyKey: string | Symbol) {
-    const router: Router = Reflect.getMetadata(ROUTER_SYMBOL, target.constructor) || new Router();
-    router.mutation(path, (target as any)[propertyKey as string], ...middleware);
-    Reflect.defineMetadata(ROUTER_SYMBOL, router, target.constructor);
+    let val: GraphQLFieldConfig<any, any, any>;
+
+    const getter = function () {
+      return val;
+    };
+
+    const setter = function (original: GraphQLFieldConfig<any, any, any>) {
+      val = original;
+      const router: Router = Reflect.getMetadata(ROUTER_SYMBOL, target.constructor) || new Router();
+      const resolver = original;
+      router.mutation(path, resolver, ...middleware);
+      Reflect.defineMetadata(ROUTER_SYMBOL, router, target.constructor);
+    };
+
+    Object.defineProperty(target, propertyKey as string, {
+      get: getter,
+      set: setter,
+    });
   };
 };

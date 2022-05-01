@@ -39,12 +39,14 @@ export class ResolverD {
   @query('random', createMiddleware('randomMiddleware1'), createMiddleware('randomMiddleware2'))
   random = random;
 }
+new ResolverD();
 
-// @classMiddleware(createMiddleware('class-middleware'))
-// export class ResolverCD {
-//   @middleware(createMiddleware('helloMiddlware1'), createMiddleware('helloMiddlware2'))
-//   hello = hello;
+@classMiddleware(createMiddleware('class-middleware'))
+export class ResolverCD {
+  @query('hello', createMiddleware('helloMiddlware1'), createMiddleware('helloMiddlware2'))
+  hello = hello;
 
-//   @middleware(createMiddleware('randomMiddleware1'), createMiddleware('randomMiddleware2'))
-//   random = random;
-// }
+  @query('random', createMiddleware('helloMiddlware1'), createMiddleware('helloMiddlware2'))
+  random = random;
+}
+new ResolverCD();

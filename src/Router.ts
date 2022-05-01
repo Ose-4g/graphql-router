@@ -12,6 +12,7 @@ export class Route {
     public middleware: Middleware[]
   ) {}
 }
+
 export class Router {
   private middlewares: Middleware[] = [];
   private queryRoutes: Route[] = [];
