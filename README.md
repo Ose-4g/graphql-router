@@ -2,6 +2,18 @@
 
 Write express-like routers in your graphql project.
 
+## Installation
+
+```bash
+npm install express-graphql-router
+```
+
+or
+
+```bash
+yarn add express-graphql-router
+```
+
 ### Quick links
 
 - [Routers in express REST APIs](#routers-in-express-rest-apis)
