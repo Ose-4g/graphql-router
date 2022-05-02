@@ -102,7 +102,12 @@ export class Router {
         }
       };
 
-      return next();
+      try {
+        return next();
+      } catch (error) {
+        pos = 0;
+        throw error;
+      }
     };
 
     return {
