@@ -332,7 +332,7 @@ app.listen(3098, () => {
 export { app };
 ```
 
-#### This package enables you to write the graphql code that resembles express code enabling you to
+## Key advantages of this package.
 
 - Easily use middleware thus ensuring seperation of concerns and avoiding code repetition.
 - Group common resolvers together.
