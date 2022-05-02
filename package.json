@@ -1,5 +1,5 @@
 {
-  "name": "@ose4g/graphql-router",
+  "name": "express-graphql-router",
   "version": "1.0.0",
   "description": "create express like middleware and router in graphql",
   "main": "lib/index.js",
