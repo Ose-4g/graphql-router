@@ -4,7 +4,7 @@ Write express-like routers in your graphql project.
 
 ### Quick links
 
-- [Routers in express REST APIs](#creating-graphql-apis-using-this-package)
+- [Routers in express REST APIs](#routers-in-express-rest-apis)
 - [Default way of creating GraphQL APIs](#default-way-of-creating-graphql-apis-express-graphql)
 - [Creating GraphQL APIs using this package](#creating-graphql-apis-using-this-package)
 - [Using decorators](#using-decorators)
