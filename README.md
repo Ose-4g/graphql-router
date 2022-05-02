@@ -670,60 +670,61 @@ export { userRouter };
 ```
 
 ```typescript
-// UserResolver.ts
+// BookResolver.ts
 import { GraphQLFieldConfig, GraphQLString } from 'graphql';
-import { mutation, query, Router } from 'express-graphql-router';
-import { authenticationMiddleware, authorizationMiddleware, validateUser } from './middlewares';
+import { classMiddleware, mutation, query, Router } from 'express-graphql-router';
+import { authenticationMiddleware, authorizationMiddleware, validateBook } from './middlewares';
 
-class UserResolver {
-  @query('getAllUsers', authenticationMiddleware, authorizationMiddleware)
-  getAllUsers: GraphQLFieldConfig<any, any, any> = {
+@classMiddleware(authenticationMiddleware, authorizationMiddleware)
+class BoolResolver {
+  @query('getAllBooks')
+  getAllbooks: GraphQLFieldConfig<any, any, any> = {
     type: GraphQLString,
     args: {},
     async resolve(parent, args, context, info) {
-      return 'getting all users' + args.path;
+      return 'getting all books' + args.path;
     },
   };
 
-  @query('getSingleUser', authenticationMiddleware, authorizationMiddleware)
-  getSingleUser: GraphQLFieldConfig<any, any, any> = {
+  @query('getSingleBook')
+  getSinglebook: GraphQLFieldConfig<any, any, any> = {
     type: GraphQLString,
     args: {
       id: { type: GraphQLString },
     },
     async resolve(parent, args, context, info) {
-      return `getting user with id = ${args.id}` + args.path;
+      return `getting book with id = ${args.id}` + args.path;
     },
   };
 
-  @mutation('createUser', authenticationMiddleware, authorizationMiddleware, validateUser)
-  createUser: GraphQLFieldConfig<any, any, any> = {
+  @mutation('createBook', validateBook)
+  createbook: GraphQLFieldConfig<any, any, any> = {
     type: GraphQLString,
     args: {
       name: { type: GraphQLString },
     },
     async resolve(parent, args, context, info) {
-      return `creating user with name = ${args.name}` + args.path;
+      return `creating book with name = ${args.name}` + args.path;
     },
   };
 
-  @mutation('updateUser', authenticationMiddleware, authorizationMiddleware, validateUser)
-  updateUserdetails: GraphQLFieldConfig<any, any, any> = {
+  @mutation('updateBook', validateBook)
+  updatebookdetails: GraphQLFieldConfig<any, any, any> = {
     type: GraphQLString,
     args: {
       id: { type: GraphQLString },
       name: { type: GraphQLString },
     },
     async resolve(parent, args, context, info) {
-      return `update name to ${args.name} for user with id = ${args.id}` + args.path;
+      return `update name to ${args.name} for book with id = ${args.id}` + args.path;
     },
   };
 }
 
-new UserResolver();
-const userRouter = Router.getRouter(UserResolver);
+new BoolResolver();
+const bookRouter = Router.getRouter(BoolResolver);
 
-export { userRouter };
+export { bookRouter };
 ```
 
 ```typescript
