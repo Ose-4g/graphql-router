@@ -15,8 +15,8 @@ export class Route {
 
 export class Router {
   private middlewares: Middleware[] = [];
-  private queryRoutes: Route[] = [];
-  private mutationRoutes: Route[] = [];
+  private queryRoutes: Map<string, Route> = new Map();
+  private mutationRoutes: Map<string, Route> = new Map();
 
   /**
    *
@@ -58,7 +58,7 @@ export class Router {
    * @returns : Router object
    */
   query(path: string, resolver: GraphQLFieldConfig<any, any, any>, ...middleware: Middleware[]) {
-    this.queryRoutes.push(new Route(path, resolver, [...this.middlewares, ...middleware]));
+    this.queryRoutes.set(path, new Route(path, resolver, [...this.middlewares, ...middleware]));
     return this;
   }
 
@@ -70,7 +70,7 @@ export class Router {
    * @returns : a router object
    */
   mutation(path: string, resolver: GraphQLFieldConfig<any, any, any>, ...middleware: Middleware[]) {
-    this.mutationRoutes.push(new Route(path, resolver, [...this.middlewares, ...middleware]));
+    this.mutationRoutes.set(path, new Route(path, resolver, [...this.middlewares, ...middleware]));
     return this;
   }
 
@@ -89,19 +89,25 @@ export class Router {
       let main: any = null;
       const next: Next = (error?: Error) => {
         if (error) {
+          pos = 0;
           throw error;
         } else if (pos < n) {
           return allMiddlewares[pos++](next, parent, args, context, info);
         } else if (graphQLField.resolve) {
           main = graphQLField.resolve(parent, args, context, info);
-          pos = 0;
           // console.log('main = ', main);
           // console.log('returning main');
+          pos = 0;
           return main;
         }
       };
 
-      return next();
+      try {
+        return next();
+      } catch (error) {
+        pos = 0;
+        throw error;
+      }
     };
 
     return {
