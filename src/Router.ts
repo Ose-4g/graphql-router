@@ -89,14 +89,15 @@ export class Router {
       let main: any = null;
       const next: Next = (error?: Error) => {
         if (error) {
+          pos = 0;
           throw error;
         } else if (pos < n) {
           return allMiddlewares[pos++](next, parent, args, context, info);
         } else if (graphQLField.resolve) {
           main = graphQLField.resolve(parent, args, context, info);
-          pos = 0;
           // console.log('main = ', main);
           // console.log('returning main');
+          pos = 0;
           return main;
         }
       };
