@@ -104,6 +104,7 @@ export { userRouter };
 ```
 
 ```typescript
+// BookController
 import { Router } from 'express';
 import { authenticationMiddleware, authorizationMiddleware, validateBook } from './middlewares';
 import { RequestHandler } from 'express';
@@ -508,6 +509,7 @@ export { userRouter };
 ```
 
 ```typescript
+// app.ts
 import express, { Request, Response } from 'express';
 import { GraphQLSchema, GraphQLObjectType } from 'graphql';
 import { graphqlHTTP } from 'express-graphql';
@@ -517,7 +519,8 @@ import { userRouter } from './UserResolver';
 import { bookRouter } from './BookResolver';
 
 const router = new Router();
-router.use(userRouter).use(bookRouter);
+router.use(userRouter);
+router.use(bookRouter);
 
 const app = express();
 
@@ -734,7 +737,8 @@ import { userRouter } from './UserResolver';
 import { bookRouter } from './BookResolver';
 
 const router = new Router();
-router.use(userRouter).use(bookRouter);
+router.use(userRouter);
+router.use(bookRouter);
 
 const app = express();
 
