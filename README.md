@@ -463,11 +463,11 @@ export { app };
 
 As seen above, there are 3 decorators that are used
 
-- **@query( name**: _string_, **...middleware**: _Middleware_ **)**: creates a new query resolver with specified middleware
+- **@query( name**: _string_, **...middleware**: _Middleware[]_ **)**: creates a new query resolver with specified middleware
 
-- **@mutation( name**: _string_, **...middleware**: _Middleware_ **)**: creates a new mutation resolver with specified middleware
+- **@mutation( name**: _string_, **...middleware**: _Middleware[]_ **)**: creates a new mutation resolver with specified middleware
 
-- **@classMiddleware(...middleware**: _Middleware_ **)**: adds specified middleware before all middleware in each of the resolvers in the class.
+- **@classMiddleware(...middleware**: _Middleware[]_ **)**: adds specified middleware before all middleware in each of the resolvers in the class.
 
 ### NOTE
 
