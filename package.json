@@ -1,6 +1,6 @@
 {
   "name": "express-graphql-router",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "create express like middleware and router in graphql",
   "main": "lib/index.js",
   "dependencies": {
