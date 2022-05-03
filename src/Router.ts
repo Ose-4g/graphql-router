@@ -25,6 +25,7 @@ export class Router {
    */
   static getRouter(constructor: Function): Router {
     const router = Reflect.getMetadata(ROUTER_SYMBOL, constructor);
+    if (!router) throw new Error(`no instance of ${constructor.name} has been created`);
     return router;
   }
 
