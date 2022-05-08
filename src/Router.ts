@@ -83,14 +83,13 @@ export class Router {
   private compress(route: Route): GraphQLFieldConfig<any, any, any> {
     const allMiddlewares = route.middleware;
     const n = allMiddlewares.length;
-    let pos = 0;
     const graphQLField = route.resolver;
 
     let newResolver = (parent: any, args: any, context: any, info: GraphQLResolveInfo) => {
       let main: any = null;
+      let pos = 0;
       const next: Next = (error?: Error) => {
         if (error) {
-          pos = 0;
           throw error;
         } else if (pos < n) {
           return allMiddlewares[pos++](next, parent, args, context, info);
@@ -98,17 +97,11 @@ export class Router {
           main = graphQLField.resolve(parent, args, context, info);
           // console.log('main = ', main);
           // console.log('returning main');
-          pos = 0;
           return main;
         }
       };
 
-      try {
-        return next();
-      } catch (error) {
-        pos = 0;
-        throw error;
-      }
+      return next();
     };
 
     return {
